@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.88.1">
-    <title>Sticky Footer Navbar Template · Bootstrap v5.1</title>
+    <title> {% block title %}Opt-Out Links{% endblock %}  </title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sticky-footer-navbar/">
 
@@ -58,26 +58,48 @@
   <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Fixed navbar</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+
+<!--       <a class="navbar-brand" href="#" style="max-width: 30%;">-->
+<!--    <img src="images/logo.png" class="img-fluid">-->
+<!-- </a>-->
+
+
+      <a class="navbar-brand" href="#"  style="max-width: 30%;">
+
+<!--        Fixed navbar-->
+          <img src="{% static 'img/logo.jpg' %}" class="img-fluid">
+
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+              aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'myapp:index'  %}">List</a>
           </li>
+
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a class="nav-link" href="{% url 'myapp:register' %}">Register</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link disabled">Disabled</a>
+
+            <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'myapp:profile'  %}">Profile</a>
           </li>
+
+            <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}?next={% url 'login' %}">Log out</a>
+            </li>
+<!--          <li class="nav-item">-->
+<!--            <a class="nav-link disabled">Disabled</a>-->
+<!--          </li>-->
         </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+<!--        <form class="d-flex">-->
+<!--          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">-->
+<!--          <button class="btn btn-outline-success" type="submit">Search</button>-->
+<!--        </form>-->
       </div>
     </div>
   </nav>
@@ -86,7 +108,7 @@
 <!-- Begin page content -->
 <main class="flex-shrink-0">
   <div class="container">
-    <h1 class="mt-5">Sticky footer with fixed navbar</h1>
+    <h1 class="mt-5">Opt-Out Links</h1>
 
 
     {% block content %} {% endblock %}
