@@ -9,7 +9,7 @@ a user module + django auth set up
 django-payal integration
 
 
-### NOTES FROM heroku-django-template README ###
+### (modified) NOTES FROM heroku-django-template README ###
 
 
 ## How to Use
@@ -24,7 +24,7 @@ To use this project, follow these steps:
 
 Using this template to create a new Django app is easy::
 
-    $ django-admin.py startproject --template=https://github.com/heroku/heroku-django-template/archive/master.zip --name=Procfile helloworld
+    $ django-admin.py startproject --template=https://github.com/adnmcq2/HerokuDjangoSetUp/archive/main.zip --name=Procfile helloworld
 
 (If this doesn't work on windows, replace `django-admin.py` with `django-admin`)
 
