@@ -21,6 +21,7 @@ django-localflavor = "*"
 beautifulsoup4 = "*"
 requests = "*"
 django-datatables-view = "*"
+django-paypal = "*"
 
 [dev-packages]
 

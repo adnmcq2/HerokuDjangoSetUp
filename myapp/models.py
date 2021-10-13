@@ -27,3 +27,8 @@ class ExtendUser(models.Model):
 
     def __str__(self):
         return self.r.username
+
+
+#To be used in Paypal receiver signal
+class MyTransaction(models.Model):
+    pass

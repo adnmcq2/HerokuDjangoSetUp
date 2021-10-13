@@ -25,6 +25,8 @@ urlpatterns = [
     path('', include('myapp.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
+
+    path('paypal/', include('paypal.standard.ipn.urls')),
 ]
 
 if 'Owner' in settings.BASE_DIR:

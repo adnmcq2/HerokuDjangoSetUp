@@ -19,6 +19,29 @@ from django.utils.html import escape
 
 from .forms import NewUserForm
 
+from django.views.generic import FormView
+from django.urls import reverse
+from paypal.standard.forms import PayPalPaymentsForm
+
+from django.views.generic import TemplateView
+
+import logging, os
+
+# logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG)
+
+logger = logging.getLogger(__name__)
+
+from django.views.decorators.csrf import csrf_exempt
+
+
+import configparser
+from django.conf import settings
+config = configparser.ConfigParser()
+config.read(os.path.join(settings.BASE_DIR,'secrets.ini'))
+
+paypal_email = config['PAYPAL']['email'] if not os.environ.get('PAYPAL_EMAIL') else os.environ.get('PAYPAL_EMAIL')
+
+
 
 def index(request):
     # latest_question_list = Question.objects.order_by('-pub_date')[:5]
@@ -107,3 +130,37 @@ def profile(request):
 def logout_view(request):
     logout(request)
     # Redirect to a success page.
+
+
+
+#https://www.guguweb.com/2021/01/12/how-to-accept-paypal-payments-on-your-django-application/
+#https://django-paypal.readthedocs.io/en/stable/standard/ipn.html
+
+class PaypalFormView(FormView):
+    template_name = 'paypal/paypal_form.html'
+    form_class = PayPalPaymentsForm
+
+    def get_initial(self):
+        return {
+            "business": paypal_email,
+            "amount": 2,
+            "currency_code": "USD",
+            "item_name": 'Example item',
+            "invoice": 1234,
+            "notify_url": self.request.build_absolute_uri(reverse('paypal-ipn')),
+            "return_url": self.request.build_absolute_uri(reverse('paypal-return')),
+            "cancel_return": self.request.build_absolute_uri(reverse('paypal-cancel')),
+            "lc": 'EN',
+            "no_shipping": '1',
+        }
+
+@csrf_exempt
+class PaypalReturnView(TemplateView):
+    template_name = 'paypal/paypal_success.html'
+
+
+@csrf_exempt
+class PaypalCancelView(TemplateView):
+    template_name = 'paypal/paypal_cancel.html'
+
+
