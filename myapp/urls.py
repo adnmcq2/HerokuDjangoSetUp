@@ -15,4 +15,11 @@ urlpatterns = [
     url(r'^my/datatable/data/$', views.OrderListJson.as_view(), name='order_list_json'),
     path("profile", views.profile, name="profile"),
 
+
+    path("order_create", views.order_create, name="order_create"),#order_create
+
+    path("done/", views.payment_done, name="done"),
+    path("process/", views.payment_process, name="process"),
+    path("canceled/", views.payment_canceled, name="canceled"),
+
 ]

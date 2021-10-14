@@ -12,6 +12,8 @@ from .models import *
 
 logger = logging.getLogger(__name__)
 
+from django.conf import settings
+
 #https://docs.djangoproject.com/en/3.1/topics/signals/
 
 @receiver(valid_ipn_received)
@@ -22,7 +24,7 @@ def paypal_payment_received(sender, **kwargs):
         # Check that the receiver email is the same we previously
         # set on the `business` field. (The user could tamper with
         # that fields on the payment form before it goes to PayPal)
-        if ipn_obj.receiver_email != 'your-paypal-business-address@example.com':
+        if ipn_obj.receiver_email != settings.PAYPAL_RECEIVER_EMAIL:
             # Not a valid payment
             return
 

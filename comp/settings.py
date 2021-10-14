@@ -148,3 +148,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
+
+
+PAYPAL_RECEIVER_EMAIL = config['PAYPAL']['email'] if not os.environ.get('PAYPAL_EMAIL') else os.environ.get('PAYPAL_EMAIL')
+PAYPAL_TEST = True

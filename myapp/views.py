@@ -17,7 +17,7 @@ from django.conf import settings
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from django.utils.html import escape
 
-from .forms import NewUserForm
+from .forms import *
 
 from django.views.generic import FormView
 from django.urls import reverse
@@ -32,15 +32,6 @@ import logging, os
 logger = logging.getLogger(__name__)
 
 from django.views.decorators.csrf import csrf_exempt
-
-
-import configparser
-from django.conf import settings
-config = configparser.ConfigParser()
-config.read(os.path.join(settings.BASE_DIR,'secrets.ini'))
-
-paypal_email = config['PAYPAL']['email'] if not os.environ.get('PAYPAL_EMAIL') else os.environ.get('PAYPAL_EMAIL')
-
 
 
 def index(request):
@@ -136,31 +127,68 @@ def logout_view(request):
 #https://www.guguweb.com/2021/01/12/how-to-accept-paypal-payments-on-your-django-application/
 #https://django-paypal.readthedocs.io/en/stable/standard/ipn.html
 
-class PaypalFormView(FormView):
-    template_name = 'paypal/paypal_form.html'
-    form_class = PayPalPaymentsForm
 
-    def get_initial(self):
-        return {
-            "business": paypal_email,
-            "amount": 2,
+# class PaypalFormView(FormView):
+#     template_name = 'paypal/paypal_form.html'
+#     form_class = PayPalPaymentsForm
+#
+#     def get_initial(self):
+#         return {
+#             "business": settings.PAYPAL_RECEIVER_EMAIL,
+#             "amount": 0.01,
+#             "currency_code": "USD",
+#             "item_name": 'Example item',
+#             "invoice": 1234,
+#             "notify_url": self.request.build_absolute_uri(reverse('paypal-ipn')),
+#             "return_url": self.request.build_absolute_uri(reverse('paypal-return')),
+#             "cancel_return": self.request.build_absolute_uri(reverse('paypal-cancel')),
+#             "lc": 'EN',
+#             "no_shipping": '1',
+#         }
+
+def order_create(request):
+    form = OrderCreateForm()
+
+    if request.method == 'POST':
+
+        return redirect(reverse('myapp:process'))
+
+    return render(request, 'myapp/order_create.html', {'form': form})  #this really should be different from myapp/process
+
+
+def payment_process(request):
+    host = request.get_host()
+
+    paypal_dict = {
+            "business": settings.PAYPAL_RECEIVER_EMAIL,
+            "amount": 0.01,
             "currency_code": "USD",
             "item_name": 'Example item',
             "invoice": 1234,
-            "notify_url": self.request.build_absolute_uri(reverse('paypal-ipn')),
-            "return_url": self.request.build_absolute_uri(reverse('paypal-return')),
-            "cancel_return": self.request.build_absolute_uri(reverse('paypal-cancel')),
+            "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),#'https://%s/%s'%(host, reverse('paypal-ipn')),
+            "return_url": request.build_absolute_uri(reverse('myapp:done')),
+            "cancel_return": request.build_absolute_uri(reverse('myapp:canceled')),#'https://%s/%s'%(host, reverse('paypal-cancel')), #self.request.build_absolute_uri(reverse('paypal-cancel')),
             "lc": 'EN',
             "no_shipping": '1',
         }
 
-@csrf_exempt
-class PaypalReturnView(TemplateView):
-    template_name = 'paypal/paypal_success.html'
+    form = PayPalPaymentsForm(initial=paypal_dict)
+
+    return render(request, 'myapp/process.html', {'form':form})
 
 
 @csrf_exempt
-class PaypalCancelView(TemplateView):
-    template_name = 'paypal/paypal_cancel.html'
+def payment_done(request):
+    return render(request, 'myapp/payment_done.html')
+
+
+@csrf_exempt
+def payment_canceled(request):
+    return render(request, 'myapp/payment_canceled.html')
+
+
+# @csrf_exempt
+# class PaypalCancelView(TemplateView):
+#     template_name = 'paypal/paypal_cancel.html'
 
 
